@@ -1,0 +1,31 @@
+<html>
+<head>
+<title> Custom Game </title>
+<script src="https://simplycodingcourses.com/files/simply.js"></script>
+<script>
+function start(){
+sjs.open();
+var menu_text = new sjs.Text("Ship Fighter", 28, "blue");
+menu_text.centerH();
+
+var info_text = new sjs.Text("Use the arrow keys to move, collect an ammo crate, then press z to shot.", 20, "yellow")
+info_text.center().offset(0,70);
+
+var playBtn = new sjs.Button("Start!", function(){
+window.location = "shipfighter.html";
+});
+playBtn.center();
+
+
+var info = new sjs.Text("Created by William Collins", 20, "green");
+info.bottom().centerH(); 
+
+} //end start
+</script>
+</head>
+<body onload="start()">
+<h1> Custom Game </h1>
+
+<div id="target" style="margin:auto;background:black;"></div>
+</body>
+</html>

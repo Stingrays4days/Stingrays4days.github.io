@@ -1,0 +1,120 @@
+<html>
+<head>
+<title> Custom Game </title>
+<script src="https://simplycodingcourses.com/files/simply.js"></script>
+<script>
+function start(){
+sjs.open("target",800,500);
+
+var background = new sjs.Image("Images/space4.png");
+background.setSize(sjs.getWidth(), sjs.getHeight());
+
+//player properties
+var player = new sjs.Image("Images/hero_right.png");
+player.type = "player";
+player.setSize(100,50)
+player.center();
+player.friction = .1;
+player.accel = .5;
+
+var boss = new sjs.Image("Images/boss.png")
+boss.center().right();
+
+
+//key functions
+sjs.keyDown(RIGHT_KEY, function(){
+r_facing = true;
+player.setImage("Images/hero_right.png")
+player.pushRight();
+});
+
+sjs.keyDown(LEFT_KEY, function(){
+r_facing = false;
+player.setImage("Images/hero_left.png")
+player.pushLeft();
+});
+
+sjs.keyDown(UP_KEY, function(){
+player.pushUp();
+});
+ 
+sjs.keyDown(DOWN_KEY, function(){
+player.pushDown();
+});
+
+//power up
+setInterval(function(){
+var x = Math.floor(Math.random() * 783);
+var y = Math.floor(Math.random() * 470);
+var ammo = new sjs.Image("Images/ammo.png");
+ammo.type = "ammo";
+ammo.setGravity();
+ammo.setSize(67,100);
+ammo.noBounds = true;
+ammo.moveTo(x,y);
+ammo.friction = .2;
+}, 5000);
+
+sjs.onHit("ammo","bottom_screen",function(x,y){
+x.destroy();
+});
+
+//lazer
+sjs.keyDown(Z_KEY, function(){
+	if (canShoot == true){
+		canShoot = false;
+		var laser = new sjs.Image("Images/hero_lazer.png");
+		laser.type = "laser"
+		laser.setSize(200,100);
+		laser.friction = 0;
+		laser.noBounds = true;
+		if(r_facing == true){
+			laser.moveTo(player.getX()+44,player.getY()-17);
+			laser.pushRight(25.5);
+		} else {
+			laser.moveTo(player.getX()-100,player.getY()-17);
+			laser.pushLeft(25.5);
+		}
+		setTimeout(function(){
+			canShoot = true;
+		},1500);
+	}
+});
+
+//score
+var bosshp = 15;
+var bosshp_txt = new sjs.Text("BossHP: 15", 21, "red");
+bosshp_txt.right();
+
+var canShoot = false;
+sjs.onHit("player","ammo", function(x,y){
+canShoot = true;
+y.destroy();
+});
+
+
+sjs.onHit("laser","boss",function(x,y){
+	y.destroy();
+	bosshp = bosshp - 1
+	bosshp_txt.setText("BossHP: "+ bosshp);
+	x.destroy();
+	if(bosshp == 0){
+		window.location ="win.html"
+	}
+});
+
+sjs.onHit("enemy",["right_screen","left_screen"], function(x,y){
+x.destroy();
+});
+
+
+
+} //end start
+</script>
+</head>
+<body onload="start()">
+<h1> Custom Game </h1>
+
+<div id="target" style="margin:auto;background:grey;"></div>
+</body>
+</html>

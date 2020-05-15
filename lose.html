@@ -1,0 +1,25 @@
+<html>
+<head>
+<title> Custom Game </title>
+<script src="https://simplycodingcourses.com/files/simply.js"></script>
+<script>
+function start(){
+sjs.open();
+var lose_txt = new sjs.Text("Better Luck Next Time", 28, "black");
+lose_txt.centerH();
+
+
+var restart_Btn = new sjs.Button("Try Again!", function(){
+window.location = "index.html";
+});
+restart_Btn.center();
+
+} //end start
+</script>
+</head>
+<body onload="start()">
+<h1> Custom Game </h1>
+
+<div id="target" style="margin:auto;background:red;"></div>
+</body>
+</html>

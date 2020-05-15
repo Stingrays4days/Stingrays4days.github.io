@@ -1,0 +1,138 @@
+<html>
+<head>
+<title> Custom Game </title>
+<script src="https://simplycodingcourses.com/files/simply.js"></script>
+<script>
+function start(){
+sjs.open("target",800,500);
+
+var background = new sjs.Image("Images/space4.png");
+background.setSize(sjs.getWidth(), sjs.getHeight());
+
+//player properties
+var player = new sjs.Image("Images/hero_right.png");
+player.type = "player";
+player.setSize(100,50)
+player.center();
+player.friction = .1;
+player.accel = .5;
+
+//key functions
+sjs.keyDown(RIGHT_KEY, function(){
+player.pushRight();
+});
+
+sjs.keyDown(LEFT_KEY, function(){
+player.pushLeft();
+});
+
+sjs.keyDown(UP_KEY, function(){
+player.pushUp();
+});
+
+sjs.keyDown(DOWN_KEY, function(){
+player.pushDown();
+});
+
+//power up
+setInterval(function(){
+var x = Math.floor(Math.random() * 783);
+var y = Math.floor(Math.random() * 470);
+var ammo = new sjs.Image("Images/ammo.png");
+ammo.type = "ammo";
+ammo.setGravity();
+ammo.setSize(67,100);
+ammo.noBounds = true;
+ammo.moveTo(x,y);
+ammo.friction = .2;
+}, 5000);
+
+sjs.onHit("ammo","bottom_screen",function(x,y){
+x.destroy();
+});
+
+sjs.onHit("player","ammo",function(x,y){
+x.grow(60,30);
+setTimeout(function(){
+x.grow(-60,-30);
+}, 4000);
+y.destroy();
+});
+
+//Enemies
+setInterval(function(){
+	var speed = Math.round(1 + Math.random()*10);
+var enemy = new sjs.Image("Images/enemy.png");
+enemy.type = "enemy";
+enemy.setSize(100,50);
+enemy.noBounds = true;
+enemy.friction = 0;
+enemy.pushLeft(speed);
+enemy.scaleSize(.5 + Math.random() * 1.2);
+enemy.moveTo(sjs.getWidth(), Math.random()*(enemy.getClamp().y));
+},1000);
+
+sjs.left_screen.offset(-500);
+sjs.right_screen.offset(500);
+
+sjs.onHit("enemy",["right_screen","left_screen"], function(x,y){
+x.destroy();
+});
+
+
+//lazer
+sjs.keyDown(Z_KEY, function(){
+	if (canShoot == true){
+		canShoot = false;
+		var laser = new sjs.Image("Images/hero_lazer.png");
+		laser.type = "laser"
+		laser.setSize(200,100);
+		laser.friction = 0;
+		laser.noBounds = true;
+		laser.moveTo(player.getX()+44,player.getY()-17);
+		laser.pushRight(25.5);
+		setTimeout(function(){
+			canShoot = true;
+		},1000);
+	}
+});
+//score
+var score = 0;
+var score_txt = new sjs.Text("Score: 0", 21, "green");
+
+var canShoot = false;
+sjs.onHit("player","ammo", function(x,y){
+canShoot = true;
+y.destroy();
+score = score + 1
+score_txt.setText("Score: "+ score)
+});
+
+
+
+sjs.onHit("player","enemy", function(x,y){
+x.destroy();
+window.location = "lose.html"
+});
+
+sjs.onHit("laser","enemy",function(x,y){
+	y.destroy();
+	score = score + 1
+	score_txt.setText("Score: "+ score);
+	x.destroy();
+	if(score == 15){
+		window.location ="bosslevel.html"
+	}
+});
+
+
+
+} //end start
+</script>
+</head>
+<body onload="start()">
+<h1> Custom Game </h1>
+
+<div id="target" style="margin:auto;background:grey;"></div>
+</body>
+</html>
